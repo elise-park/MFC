@@ -1,0 +1,11 @@
+Description: Stability information at each time-step of the simulation. This
+             data is composed of the inviscid Courant–Friedrichs–Lewy (ICFL)
+             number, the viscous CFL (VCFL) number, the capillary CFL (CCFL)
+             number and the cell Reynolds (Rc) number. Please note that only
+             those stability conditions pertinent to the physics included in
+             the current computation are displayed.
+Date: 10/28/25
+
+
+             Time-step                     dt                   Time               ICFL Max
+                     0               0.000000               0.000000               0.005495

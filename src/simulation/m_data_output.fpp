@@ -328,6 +328,7 @@ contains
 
         ! Determining global stability criteria extrema at current time-step
         if (num_procs > 1) then
+                print *, 'Got here 1 and icfl_max_glb is', icfl_max_glb
             call s_mpi_reduce_stability_criteria_extrema(icfl_max_loc, &
                                                          vcfl_max_loc, &
                                                          Rc_min_loc, &
@@ -335,6 +336,7 @@ contains
                                                          vcfl_max_glb, &
                                                          Rc_min_glb)
         else
+                print *, 'Got here 2 and icfl_max_glb is', icfl_max_glb
             icfl_max_glb = icfl_max_loc
             if (viscous) vcfl_max_glb = vcfl_max_loc
             if (viscous) Rc_min_glb = Rc_min_loc
