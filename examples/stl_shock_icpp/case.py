@@ -98,10 +98,10 @@ case = {
     "patch_icpp(1)%vel(1)": 0.0,
     "patch_icpp(1)%vel(2)": 0.0,
     "patch_icpp(1)%pres": patmos,
-    "patch_icpp(1)%alpha_rho(1)": 0.0, #gas
-    "patch_icpp(1)%alpha_rho(2)": rhol, #making this liquid for now
-    "patch_icpp(1)%alpha(1)": 0.0,
-    "patch_icpp(1)%alpha(2)": 1.0,
+    "patch_icpp(1)%alpha_rho(1)": rhog, #making this gas for now
+    "patch_icpp(1)%alpha_rho(2)": 0.0, #
+    "patch_icpp(1)%alpha(1)": 1.0,
+    "patch_icpp(1)%alpha(2)": 0.0,
 
     # Patch 2: Shocked region
     "patch_icpp(2)%geometry": 3,
@@ -113,10 +113,10 @@ case = {
     "patch_icpp(2)%vel(1)": ushock_l, #made positive
     "patch_icpp(2)%vel(2)": 0.0,
     "patch_icpp(2)%pres": P_amp,
-    "patch_icpp(2)%alpha_rho(1)": 0.0,
-    "patch_icpp(2)%alpha_rho(2)": rho_shock_l,
-    "patch_icpp(2)%alpha(1)": 0.0,
-    "patch_icpp(2)%alpha(2)": 1.0,
+    "patch_icpp(2)%alpha_rho(1)": rhog,
+    "patch_icpp(2)%alpha_rho(2)": 0.0, #rho_shock_l
+    "patch_icpp(2)%alpha(1)": 1.0,
+    "patch_icpp(2)%alpha(2)": 0.0,
 
     # Voronoi STL
     "patch_icpp(3)%geometry": 21,
@@ -140,8 +140,8 @@ case = {
 
     # Fluid properties
     "fluid_pp(2)%gamma": 1.0 / (gammal - 1.0),
-    "fluid_pp(2)%pi_inf": gammal * Bl / (gammal - 1.0),
-    "fluid_pp(2)%G": G_l,
+    "fluid_pp(2)%pi_inf": 0.0, #gammal * Bl / (gammal - 1.0)
+    "fluid_pp(2)%G": 0.0, #G_l
     "fluid_pp(1)%gamma": 1.0 / (gammag - 1.0),
     "fluid_pp(1)%pi_inf": 0.0,
     "fluid_pp(1)%G": 0.0,
