@@ -328,7 +328,7 @@ contains
 
         ! Determining global stability criteria extrema at current time-step
         if (num_procs > 1) then
-                print *, 'Got here 1 and icfl_max_glb is', icfl_max_glb
+               ! print *, 'Got here 1 and icfl_max_glb is', icfl_max_glb
             call s_mpi_reduce_stability_criteria_extrema(icfl_max_loc, &
                                                          vcfl_max_loc, &
                                                          Rc_min_loc, &
