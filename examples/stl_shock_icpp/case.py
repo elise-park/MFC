@@ -23,7 +23,7 @@ G_l = 5.0e3
 
 # Shock amplitude
 delta_P_s = 2.0e6 #2.0e6
-P_amp = patmos + delta_P_s
+P_amp = patmos + 0*delta_P_s
 
 # Compute shock velocity for lung-like fluid
 c_l = math.sqrt(gammal * (patmos + Bl) / rhol)
@@ -98,10 +98,10 @@ case = {
     "patch_icpp(1)%vel(1)": 0.0,
     "patch_icpp(1)%vel(2)": 0.0,
     "patch_icpp(1)%pres": patmos,
-    "patch_icpp(1)%alpha_rho(1)": 0.0, #making this liquid for now
-    "patch_icpp(1)%alpha_rho(2)": rhol, #
-    "patch_icpp(1)%alpha(1)": 0.0,
-    "patch_icpp(1)%alpha(2)": 1.0,
+    "patch_icpp(1)%alpha_rho(1)": rhog, #making this gas for now
+    "patch_icpp(1)%alpha_rho(2)": 0.0, #
+    "patch_icpp(1)%alpha(1)": 1.0,
+    "patch_icpp(1)%alpha(2)": 0.0,
 
     # Patch 2: Shocked region
     "patch_icpp(2)%geometry": 3,
