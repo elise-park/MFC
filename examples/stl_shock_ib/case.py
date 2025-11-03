@@ -65,9 +65,8 @@ case = {
     "t_step_start": 0,
     "t_step_stop": 10000,
     "t_step_save": 100,
-    #"cfl_adap_dt": "T", #try adaptive
     "cfl_target": cfl,
-    "num_patches": 3,
+    "num_patches": 2,        # background + shocked
     "model_eqns": 2,
     "num_fluids": 2,
     "time_stepper": 3,
@@ -78,8 +77,8 @@ case = {
     "wave_speeds": 1,
     "avg_state": 2,
     "viscous": "F",
-    "ib": "F",
-    "num_ibs": 0,
+    "ib": "T",
+    "num_ibs": 1,
     "bc_x%beg": -3,
     "bc_x%end": -3,
     "bc_y%beg": -3,
@@ -98,10 +97,19 @@ case = {
     "patch_icpp(1)%vel(1)": 0.0,
     "patch_icpp(1)%vel(2)": 0.0,
     "patch_icpp(1)%pres": patmos,
-    "patch_icpp(1)%alpha_rho(1)": 0.0, #making this liquid for now
-    "patch_icpp(1)%alpha_rho(2)": rhol, #
-    "patch_icpp(1)%alpha(1)": 0.0,
-    "patch_icpp(1)%alpha(2)": 1.0,
+    "patch_icpp(1)%alpha_rho(1)": rhol,
+    "patch_icpp(1)%alpha_rho(2)": rhog,
+    "patch_icpp(1)%alpha(1)": 1.0,
+    "patch_icpp(1)%alpha(2)": 0.0,
+
+    # Immersed Boundary: Voronoi STL
+    "patch_ib(1)%geometry": 5,
+    "patch_ib(1)%model_filepath": "vor_closed.stl",
+    "patch_ib(1)%model_translate(1)": 0,
+    "patch_ib(1)%model_translate(2)": 0,
+    "patch_ib(1)%model_spc": 50,
+    "patch_ib(1)%model_threshold": 0.5,
+    "patch_ib(1)%slip": "F",
 
     # Patch 2: Shocked region
     "patch_icpp(2)%geometry": 3,
@@ -113,38 +121,18 @@ case = {
     "patch_icpp(2)%vel(1)": ushock_l, #made positive
     "patch_icpp(2)%vel(2)": 0.0,
     "patch_icpp(2)%pres": P_amp,
-    "patch_icpp(2)%alpha_rho(1)": 0.0,
-    "patch_icpp(2)%alpha_rho(2)": rho_shock_l, #rho_shock_l
-    "patch_icpp(2)%alpha(1)": 0.0,
-    "patch_icpp(2)%alpha(2)": 1.0,
-
-    # Voronoi STL
-    "patch_icpp(3)%geometry": 21,
-    "patch_icpp(3)%model_filepath": "vor_closed.stl",
-    "patch_icpp(3)%alter_patch(1)": "T",
-    "patch_icpp(3)%alter_patch(2)": "F", # originally T
-    "patch_icpp(3)%model_translate(1)": 0,
-    "patch_icpp(3)%model_translate(2)": 0,
-    "patch_icpp(3)%model_spc": 50,
-    "patch_icpp(3)%model_threshold": 0.5,
-    "patch_icpp(2)%model_threshold": 0.5,
-    "patch_icpp(3)%x_centroid": 0.0,
-    "patch_icpp(3)%y_centroid": 0.0,
-    "patch_icpp(3)%vel(1)": 0.0,
-    "patch_icpp(3)%vel(2)": 0.0,
-    "patch_icpp(3)%pres": patmos,
-    "patch_icpp(3)%alpha_rho(1)": rhog, #0.0 for liquid
-    "patch_icpp(3)%alpha(1)": 1.0,#0.0 for liquid
-    "patch_icpp(3)%alpha_rho(2)": 0.0, #rhol for liquid
-    "patch_icpp(3)%alpha(2)": 0.0, #1.0 for liquid
+    "patch_icpp(2)%alpha_rho(1)": rho_shock_l,
+    "patch_icpp(2)%alpha_rho(2)": rhog,
+    "patch_icpp(2)%alpha(1)": 1,
+    "patch_icpp(2)%alpha(2)": 0,
 
     # Fluid properties
-    "fluid_pp(2)%gamma": 1.0 / (gammal - 1.0),
-    "fluid_pp(2)%pi_inf": gammal * Bl / (gammal - 1.0),
-    "fluid_pp(2)%G": G_l,
-    "fluid_pp(1)%gamma": 1.0 / (gammag - 1.0),
-    "fluid_pp(1)%pi_inf": 0.0,
-    "fluid_pp(1)%G": 0.0,
+    "fluid_pp(1)%gamma": 1.0 / (gammal - 1.0),
+    "fluid_pp(1)%pi_inf": gammal * Bl / (gammal - 1.0),
+    "fluid_pp(1)%G": G_l,
+    "fluid_pp(2)%gamma": 1.0 / (gammag - 1.0),
+    "fluid_pp(2)%pi_inf": 0.0,
+    "fluid_pp(2)%G": 0.0,
 }
 
 print(json.dumps(case, indent=2))

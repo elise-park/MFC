@@ -63,8 +63,8 @@ case = {
     "p": 0,
     "dt": 1.0e-8,
     "t_step_start": 0,
-    "t_step_stop": 10000,
-    "t_step_save": 100,
+    "t_step_stop": 1000,
+    "t_step_save": 10,
     #"cfl_adap_dt": "T", #try adaptive
     "cfl_target": cfl,
     "num_patches": 3,
@@ -121,8 +121,8 @@ case = {
     # Voronoi STL
     "patch_icpp(3)%geometry": 21,
     "patch_icpp(3)%model_filepath": "vor_closed.stl",
-    "patch_icpp(3)%alter_patch(1)": "T",
-    "patch_icpp(3)%alter_patch(2)": "F", # originally T
+    "patch_icpp(3)%alter_patch(1)": "F", #test
+    "patch_icpp(3)%alter_patch(2)": "F",
     "patch_icpp(3)%model_translate(1)": 0,
     "patch_icpp(3)%model_translate(2)": 0,
     "patch_icpp(3)%model_spc": 50,
@@ -133,16 +133,16 @@ case = {
     "patch_icpp(3)%vel(1)": 0.0,
     "patch_icpp(3)%vel(2)": 0.0,
     "patch_icpp(3)%pres": patmos,
-    "patch_icpp(3)%alpha_rho(1)": rhog, #0.0 for liquid
-    "patch_icpp(3)%alpha(1)": 1.0,#0.0 for liquid
-    "patch_icpp(3)%alpha_rho(2)": 0.0, #rhol for liquid
-    "patch_icpp(3)%alpha(2)": 0.0, #1.0 for liquid
+    "patch_icpp(3)%alpha_rho(1)": rhog, #making this gas for now
+    "patch_icpp(3)%alpha(1)": 1.0,
+    "patch_icpp(3)%alpha_rho(2)": 0.0,
+    "patch_icpp(3)%alpha(2)": 0.0,
 
     # Fluid properties
-    "fluid_pp(2)%gamma": 1.0 / (gammal - 1.0),
+    "fluid_pp(2)%gamma": gammal,
     "fluid_pp(2)%pi_inf": gammal * Bl / (gammal - 1.0),
     "fluid_pp(2)%G": G_l,
-    "fluid_pp(1)%gamma": 1.0 / (gammag - 1.0),
+    "fluid_pp(1)%gamma": gammag,
     "fluid_pp(1)%pi_inf": 0.0,
     "fluid_pp(1)%G": 0.0,
 }
