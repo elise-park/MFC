@@ -113,9 +113,9 @@ print(
             # Patch 4: Gas Behind STL
             "patch_icpp(4)%geometry": 3,
             "patch_icpp(4)%alter_patch(1)": "T",
-            "patch_icpp(4)%x_centroid": 0.5 * leng,
+            "patch_icpp(4)%x_centroid": 0.0,
             "patch_icpp(4)%y_centroid": 0.0,
-            "patch_icpp(4)%length_x": leng,
+            "patch_icpp(4)%length_x": 10*leng,
             "patch_icpp(4)%length_y": leng,
             "patch_icpp(4)%vel(1)": 0.0,
             "patch_icpp(4)%vel(2)": 0.0,
