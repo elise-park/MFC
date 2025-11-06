@@ -2,21 +2,56 @@
 import math
 import json
 
-ps = 248758.567
-gam = 1.4
-rho = 1.0
-c_l = math.sqrt(1.4 * ps / rho)
-vel = 500#230.0
+pi = 3.141592653589
+patmos = 101325.0  # Pa
+
+# gas properties
+gammag = 1.4
+Bg = 0.0
+rhog = 1.18
+c_g = 347.2
+G_g = 0.0
+
+# lung properties
+gammal = 5.5
+Bl = 492.0e6
+rhol = 996.0
+G_l = 10.0e3
+c_l = math.sqrt(gammal * (patmos + Bl) / rhol)
+
+P_amp = 1.0e6  # Shock pressure
 
 leng = 1.0
-Ny = 200.0
+Ny = 200
 Nx = Ny * 3
 dx = leng / Nx
+vel = 500.0
 
 time_end = 5 * leng / vel
 cfl = 0.1
 dt = cfl * dx / c_l
 Nt = int(time_end / dt)
+eps = 1e-8
+
+alphal_back = 1.0 - eps
+alphag_back = 1.0 - alphal_back
+alphag_lung = 1.0 - eps
+alphal_lung = 1.0 - alphag_lung
+
+g_r = gammal
+g_l = gammal
+p_r = patmos
+p_l = P_amp
+B_r = Bl
+r_r = rhol
+c_r = c_l
+
+rho_shock_l = (((g_r + 1)/(g_r - 1))*((p_l + B_r)/(p_r + B_r)) + 1)/(
+    (g_r + 1)/(g_r - 1) + (p_l + B_r)/(p_r + B_r))*r_r
+ushock_l = (c_r / g_r) * ((p_l / p_r) - 1) * (p_r / (p_r + B_r)) / math.sqrt(
+    ((g_r + 1)/(2 * g_r)) * ((p_l / p_r) - 1) * (p_r / (p_r + B_r)) + 1
+)
+
 
 # Configuring case dictionary
 print(
@@ -73,12 +108,12 @@ print(
             "patch_icpp(1)%length_x": 10 * leng,
             "patch_icpp(1)%length_y": leng,
             "patch_icpp(1)%vel(1)": 0,
-            "patch_icpp(1)%vel(2)": 0.0e00,
-            "patch_icpp(1)%pres": 101325.0,
-            "patch_icpp(1)%alpha_rho(1)": 1.29,
-            "patch_icpp(1)%alpha_rho(2)": 0.0e00,
-            "patch_icpp(1)%alpha(1)": 1.0e00,
-            "patch_icpp(1)%alpha(2)": 0.0e00,
+            "patch_icpp(1)%vel(2)": 0.0,
+            "patch_icpp(1)%pres": patmos,
+            "patch_icpp(1)%alpha_rho(1)": rhol * alphal_back,
+            "patch_icpp(1)%alpha_rho(2)": rhog * alphag_back,
+            "patch_icpp(1)%alpha(1)": alphal_back,
+            "patch_icpp(1)%alpha(2)": alphag_back,
             # Patch 2: Shocked state
             "patch_icpp(2)%geometry": 3,
             "patch_icpp(2)%alter_patch(1)": "T",
@@ -86,13 +121,13 @@ print(
             "patch_icpp(2)%y_centroid": 0.0,
             "patch_icpp(2)%length_x": leng / 4.0,
             "patch_icpp(2)%length_y": leng,
-            "patch_icpp(2)%vel(1)": vel,
+            "patch_icpp(2)%vel(1)": 0.12179783573189823, #ushock_l,
             "patch_icpp(2)%vel(2)": 0.0e00,
-            "patch_icpp(2)%pres": ps,
-            "patch_icpp(2)%alpha_rho(1)": 2.4,
-            "patch_icpp(2)%alpha_rho(2)": 0.0e00,
-            "patch_icpp(2)%alpha(1)": 1.0e00,
-            "patch_icpp(2)%alpha(2)": 0.0e00,
+            "patch_icpp(2)%pres": 301325.0, #P_amp,
+            "patch_icpp(2)%alpha_rho(1)": 996.0735768378366, #rho_shock_l * alphal_back,
+            "patch_icpp(2)%alpha_rho(2)": 1.1800000059292159e-08, #rhog * alphag_back,
+            "patch_icpp(2)%alpha(1)": 0.99999999,  #alphal_back,
+            "patch_icpp(2)%alpha(2)": 1.0000000050247593e-08, #alphag_back,
             # Patch 3: Lung
             "patch_icpp(3)%geometry": 21,
             "patch_icpp(3)%model_filepath": "voro_flat.stl",
@@ -107,11 +142,11 @@ print(
             "patch_icpp(3)%alter_patch(1)": "T",
             "patch_icpp(3)%vel(1)": 0.0,
             "patch_icpp(3)%vel(2)": 0.0e00,
-            "patch_icpp(3)%pres": 101325.00,
-            "patch_icpp(3)%alpha_rho(1)": 1.29,
-            "patch_icpp(3)%alpha_rho(2)": 0.0,
-            "patch_icpp(3)%alpha(1)": 1.0e00,
-            "patch_icpp(3)%alpha(2)": 0.0e00,
+            "patch_icpp(3)%pres": patmos,
+            "patch_icpp(3)%alpha_rho(1)": rhol * alphal_back,
+            "patch_icpp(3)%alpha_rho(2)": rhog * alphag_back,
+            "patch_icpp(3)%alpha(1)": alphal_back,
+            "patch_icpp(3)%alpha(2)": alphag_back,
             #Gas Background
             "patch_icpp(4)%geometry": 3,
             "patch_icpp(4)%alter_patch(1)": "T",
@@ -121,16 +156,18 @@ print(
             "patch_icpp(4)%length_y": leng,
             "patch_icpp(4)%vel(1)": 0.0,
             "patch_icpp(4)%vel(2)": 0.0,
-            "patch_icpp(4)%pres": 101325.0,
-            "patch_icpp(4)%alpha_rho(1)": 0.0,
-            "patch_icpp(4)%alpha_rho(2)": .167, #gas
-            "patch_icpp(4)%alpha(1)": 0.0,
-            "patch_icpp(4)%alpha(2)": 1.0,
-            # Fluids Physical Parameters
-            "fluid_pp(1)%gamma": 1.0e00 / (1.4e00 - 1.0e00),
-            "fluid_pp(1)%pi_inf": 0.0,
-            "fluid_pp(2)%gamma": 1.0e00 / (1.6666e00 - 1.0e00),
-            "fluid_pp(2)%pi_inf": 0.0e00,
+            "patch_icpp(4)%pres": patmos,
+            "patch_icpp(4)%alpha_rho(1)": rhol * alphal_lung,
+            "patch_icpp(4)%alpha_rho(2)": rhog * alphag_lung, #gas
+            "patch_icpp(4)%alpha(1)": alphal_lung,
+            "patch_icpp(4)%alpha(2)": alphag_lung,
+            # Fluid physical parameters
+            "fluid_pp(1)%gamma": 1.0 / (gammal - 1.0),
+            "fluid_pp(1)%pi_inf": gammal * Bl / (gammal - 1.0),
+            "fluid_pp(1)%G": G_l,
+            "fluid_pp(2)%gamma": 1.0 / (gammag - 1.0),
+            "fluid_pp(2)%pi_inf": gammag * Bg / (gammag - 1.0),
+            "fluid_pp(2)%G": G_g,
         }
     )
 )
