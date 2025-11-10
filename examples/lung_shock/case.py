@@ -51,7 +51,7 @@ c_l_for_dt = math.sqrt(1.4 * ps / rho)
 vel = 500.0
 
 leng = 1.0
-Ny = 400.0 #200.0
+Ny = 200.0 #200.0
 Nx = Ny * 3.0
 dx = leng / Nx
 
@@ -75,7 +75,7 @@ print(
             "dt": dt,
             "t_step_start": 0,
             "t_step_stop": 10000,
-            "t_step_save": 1,
+            "t_step_save": 100,
             # simulation algorithm parameters
             "num_patches": 4,
             "model_eqns": 2,
@@ -136,8 +136,8 @@ print(
             "patch_icpp(3)%geometry": 21,
             "patch_icpp(3)%model_filepath": "voro_flat.stl",
             "patch_icpp(3)%model_spc": 10,
-            "patch_icpp(3)%model_scale(1)": 8,
-            "patch_icpp(3)%model_scale(2)": 8,
+            "patch_icpp(3)%model_scale(1)": 15, #8
+            "patch_icpp(3)%model_scale(2)": 15, #8
             "patch_icpp(3)%model_translate(1)":1.25,
             "patch_icpp(3)%model_translate(2)":-0.25,   
             "patch_icpp(3)%model_threshold": 0.99,
