@@ -51,7 +51,7 @@ c_l_for_dt = math.sqrt(1.4 * ps / rho)
 vel = 500.0
 
 leng = 1.0
-Ny = 400.0 #200.0, doubled dimensions
+Ny = 400.0 #200.0
 Nx = Ny * 3.0
 dx = leng / Nx
 
@@ -75,7 +75,7 @@ print(
             "dt": dt,
             "t_step_start": 0,
             "t_step_stop": 10000,
-            "t_step_save": 100,
+            "t_step_save": 1,
             # simulation algorithm parameters
             "num_patches": 4,
             "model_eqns": 2,
@@ -95,8 +95,8 @@ print(
             "wave_speeds": 1,
             "avg_state": 2,
             "fd_order": 2,
-            "bc_x%beg": -6,
-            "bc_x%end": -6,
+            "bc_x%beg": -7,
+            "bc_x%end": -8,
             "bc_y%beg": -2,
             "bc_y%end": -2,
             "format": 1,
@@ -104,7 +104,7 @@ print(
             "prim_vars_wrt": "T",
             "parallel_io": "T",
             #turning on hypoelasticity
-            #"hypoelasticity": "T",
+           # "hypoelasticity": "T",
             #patch 1: background patch
             "patch_icpp(1)%geometry": 3,
             "patch_icpp(1)%x_centroid": 0.0,
