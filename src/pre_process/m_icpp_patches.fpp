@@ -1611,7 +1611,7 @@ contains
             end if
 
             if (proc_rank == 0) then
-                print *, ' * Total number of interpolated boundary vertices:', total_vertices
+                print *, ' * Total number of interpolated boundary:', total_vertices
             end if
         end if
 
@@ -1658,10 +1658,14 @@ contains
 
                     eta = f_model_is_inside(model, point, (/dx, dy, dz/), patch_icpp(patch_id)%model_spc)
 
-                    if (eta > patch_icpp(patch_id)%model_threshold) then
-                        eta = 1._wp
-                    else if (.not. patch_icpp(patch_id)%smoothen) then
-                        eta = 0._wp
+                    if (patch_icpp(patch_id)%smoothen) then
+                        eta = 0.5_wp + 0.5_wp * tanh(eta)
+                    else
+                        if (eta > patch_icpp(patch_id)%model_threshold) then
+                            eta = 1._wp
+                        else
+                            eta = 0._wp
+                        end if
                     end if
 
                     call s_assign_patch_primitive_variables(patch_id, i, j, k, &
