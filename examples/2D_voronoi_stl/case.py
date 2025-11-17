@@ -14,7 +14,7 @@ G_g = 0.0       # Pa
 
 #liquid parameters
 gammal = 5.5
-Bl = 492.0e6    # Pa
+Bl = 0*492.0e6    # Pa
 rhol = 996.0    # kg/m^3
 G_l = 5.0e3     # Pa
 Cv_l = 1816.0
@@ -54,6 +54,7 @@ leng = 1.0
 Ny = 200.0 #200.0
 Nx = Ny * 3.0
 dx = leng / Nx
+eps = 1E-3
 
 time_end = 5.0 * leng / vel
 cfl = 0.02 #0.1
@@ -74,14 +75,14 @@ print(
             "p": 0,
             "dt": dt,
             "t_step_start": 0,
-            "t_step_stop": 10000,
-            "t_step_save": 100,
+            "t_step_stop": 200,
+            "t_step_save": 200,
             # simulation algorithm parameters
-            "num_patches": 4,
+            "num_patches": 3,
             "model_eqns": 2,
             "alt_soundspeed": "F",
             "num_fluids": 2,
-            "mpp_lim": "T",
+            "mpp_lim": "F",
             "mixture_err": "T",
             "time_stepper": 3,
             "weno_order": 5,
@@ -90,13 +91,13 @@ print(
             "weno_avg": "F",
             "mapped_weno": "T",
             "null_weights": "F",
-            "mp_weno": "F",
+            "mp_weno": "T",
             "riemann_solver": 1,
             "wave_speeds": 1,
             "avg_state": 2,
-            "fd_order": 2,
-            "bc_x%beg": -7,
-            "bc_x%end": -8,
+            "fd_order": 1,
+            "bc_x%beg": -2,
+            "bc_x%end": -2,
             "bc_y%beg": -2,
             "bc_y%end": -2,
             "format": 1,
@@ -105,66 +106,52 @@ print(
             "parallel_io": "T",
             #turning on hypoelasticity
            # "hypoelasticity": "T",
-            #patch 1: background patch
+            #patch 1: Gas Background
             "patch_icpp(1)%geometry": 3,
-            "patch_icpp(1)%x_centroid": 0.0,
+            "patch_icpp(1)%x_centroid": 1.25,
             "patch_icpp(1)%y_centroid": 0.0,
             "patch_icpp(1)%length_x": 10 * leng,
             "patch_icpp(1)%length_y": leng,
-            "patch_icpp(1)%vel(1)": 0,
-            "patch_icpp(1)%vel(2)": 0.0e00,
+            "patch_icpp(1)%vel(1)": 0.0,
+            "patch_icpp(1)%vel(2)": 0.0,
             "patch_icpp(1)%pres": patmos,
-            "patch_icpp(1)%alpha_rho(1)": rhol,
-            "patch_icpp(1)%alpha_rho(2)": 0.0e00,
-            "patch_icpp(1)%alpha(1)": 1.0e00,
-            "patch_icpp(1)%alpha(2)": 0.0e00,
+            "patch_icpp(1)%alpha_rho(1)": rhol*eps,
+            "patch_icpp(1)%alpha_rho(2)": rhog*(1.-eps), #gas
+            "patch_icpp(1)%alpha(1)": eps,
+            "patch_icpp(1)%alpha(2)": 1.0-eps,
             #patch 2: shock
             "patch_icpp(2)%geometry": 3,
             "patch_icpp(2)%alter_patch(1)": "T",
-            "patch_icpp(2)%x_centroid": -3 * leng / 8.0,
+            "patch_icpp(2)%x_centroid": -3.0 * leng / 8.0,
             "patch_icpp(2)%y_centroid": 0.0,
             "patch_icpp(2)%length_x": leng / 4.0,
             "patch_icpp(2)%length_y": leng,
             "patch_icpp(2)%vel(1)": ushock_l,
             "patch_icpp(2)%vel(2)": 0.0e00,
             "patch_icpp(2)%pres": P_amp,
-            "patch_icpp(2)%alpha_rho(1)": rho_shock_l,
-            "patch_icpp(2)%alpha_rho(2)": 0.0e00,
-            "patch_icpp(2)%alpha(1)": 1.0e00,
-            "patch_icpp(2)%alpha(2)": 0.0e00,
+            "patch_icpp(2)%alpha_rho(1)": rho_shock_l*(1.-eps),
+            "patch_icpp(2)%alpha_rho(2)": rhog*eps,
+            "patch_icpp(2)%alpha(1)": 1.0e00 - eps,
+            "patch_icpp(2)%alpha(2)": eps,
             # Patch 3: Lung
             "patch_icpp(3)%geometry": 21,
             "patch_icpp(3)%model_filepath": "voro_flat.stl",
             "patch_icpp(3)%model_spc": 10,
-            "patch_icpp(3)%model_scale(1)": 15, #8
-            "patch_icpp(3)%model_scale(2)": 15, #8
+            "patch_icpp(3)%model_scale(1)": 8,
+            "patch_icpp(3)%model_scale(2)": 8,
             "patch_icpp(3)%model_translate(1)":1.25,
             "patch_icpp(3)%model_translate(2)":-0.25,   
-            "patch_icpp(3)%model_threshold": 0.99,
+            "patch_icpp(3)%model_threshold": 0.99999999,
             "patch_icpp(3)%x_centroid": 0.0e00,
             "patch_icpp(3)%y_centroid": 0.0e00,
             "patch_icpp(3)%alter_patch(1)": "T",
             "patch_icpp(3)%vel(1)": 0.0,
             "patch_icpp(3)%vel(2)": 0.0e00,
             "patch_icpp(3)%pres": patmos,
-            "patch_icpp(3)%alpha_rho(1)": rhol,
-            "patch_icpp(3)%alpha_rho(2)": 0.0,
-            "patch_icpp(3)%alpha(1)": 1.0e00,
-            "patch_icpp(3)%alpha(2)": 0.0e00,
-            #patch 4: Gas Background
-            "patch_icpp(4)%geometry": 3,
-            "patch_icpp(4)%alter_patch(1)": "T",
-            "patch_icpp(4)%x_centroid": 1.25,
-            "patch_icpp(4)%y_centroid": 0.0,
-            "patch_icpp(4)%length_x": 2.5 * leng,
-            "patch_icpp(4)%length_y": leng,
-            "patch_icpp(4)%vel(1)": 0.0,
-            "patch_icpp(4)%vel(2)": 0.0,
-            "patch_icpp(4)%pres": patmos,
-            "patch_icpp(4)%alpha_rho(1)": 0.0,
-            "patch_icpp(4)%alpha_rho(2)": rhog, #gas
-            "patch_icpp(4)%alpha(1)": 0.0,
-            "patch_icpp(4)%alpha(2)": 1.0,
+            "patch_icpp(3)%alpha_rho(1)": rhol*(1.-eps),
+            "patch_icpp(3)%alpha_rho(2)": rhog*eps,
+            "patch_icpp(3)%alpha(1)": 1.0e00-eps,
+            "patch_icpp(3)%alpha(2)": eps,
             # Fluids Physical Parameters
             "fluid_pp(1)%gamma": 1.0 / (gammal - 1.0),
             "fluid_pp(1)%pi_inf": gammal * Bl / (gammal - 1.0),
