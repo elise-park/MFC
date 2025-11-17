@@ -1611,7 +1611,7 @@ contains
             end if
 
             if (proc_rank == 0) then
-                print *, ' * Total number of interpolated boundary vertices:', total_vertices
+                print *, ' * Total number of interpolated boundary:', total_vertices
             end if
         end if
 

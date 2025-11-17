@@ -51,7 +51,7 @@ c_l_for_dt = math.sqrt(1.4 * ps / rho)
 vel = 500.0
 
 leng = 1.0
-Ny = 200.0 #200.0
+Ny = 200.0
 Nx = Ny * 3.0
 dx = leng / Nx
 eps = 1E-3
@@ -75,8 +75,13 @@ print(
             "p": 0,
             "dt": dt,
             "t_step_start": 0,
+<<<<<<<< HEAD:examples/2D_voronoi_stl/case.py
             "t_step_stop": 200,
             "t_step_save": 200,
+========
+            "t_step_stop": 10000, #10000
+            "t_step_save": 100,#100
+>>>>>>>> c0df7667f5b6f6db88816affdf5c7cd0ad59b187:examples/2D_lung_shock/case.py
             # simulation algorithm parameters
             "num_patches": 3,
             "model_eqns": 2,
@@ -104,9 +109,15 @@ print(
             "precision": 2,
             "prim_vars_wrt": "T",
             "parallel_io": "T",
+<<<<<<<< HEAD:examples/2D_voronoi_stl/case.py
             #turning on hypoelasticity
            # "hypoelasticity": "T",
             #patch 1: Gas Background
+========
+            # Turning on hypoelasticity
+            #"hypoelasticity": "T",
+            # Patch 1: Background Patch (Liquid)
+>>>>>>>> c0df7667f5b6f6db88816affdf5c7cd0ad59b187:examples/2D_lung_shock/case.py
             "patch_icpp(1)%geometry": 3,
             "patch_icpp(1)%x_centroid": 1.25,
             "patch_icpp(1)%y_centroid": 0.0,
@@ -115,11 +126,19 @@ print(
             "patch_icpp(1)%vel(1)": 0.0,
             "patch_icpp(1)%vel(2)": 0.0,
             "patch_icpp(1)%pres": patmos,
+<<<<<<<< HEAD:examples/2D_voronoi_stl/case.py
             "patch_icpp(1)%alpha_rho(1)": rhol*eps,
             "patch_icpp(1)%alpha_rho(2)": rhog*(1.-eps), #gas
             "patch_icpp(1)%alpha(1)": eps,
             "patch_icpp(1)%alpha(2)": 1.0-eps,
             #patch 2: shock
+========
+            "patch_icpp(1)%alpha_rho(1)": rhol,
+            "patch_icpp(1)%alpha_rho(2)": 0.0e00,
+            "patch_icpp(1)%alpha(1)": 1.0e00,
+            "patch_icpp(1)%alpha(2)": 0.0e00,
+            # Patch 2: Shock (Liquid)
+>>>>>>>> c0df7667f5b6f6db88816affdf5c7cd0ad59b187:examples/2D_lung_shock/case.py
             "patch_icpp(2)%geometry": 3,
             "patch_icpp(2)%alter_patch(1)": "T",
             "patch_icpp(2)%x_centroid": -3.0 * leng / 8.0,
@@ -129,6 +148,7 @@ print(
             "patch_icpp(2)%vel(1)": ushock_l,
             "patch_icpp(2)%vel(2)": 0.0e00,
             "patch_icpp(2)%pres": P_amp,
+<<<<<<<< HEAD:examples/2D_voronoi_stl/case.py
             "patch_icpp(2)%alpha_rho(1)": rho_shock_l*(1.-eps),
             "patch_icpp(2)%alpha_rho(2)": rhog*eps,
             "patch_icpp(2)%alpha(1)": 1.0e00 - eps,
@@ -144,14 +164,52 @@ print(
             "patch_icpp(3)%model_threshold": 0.99999999,
             "patch_icpp(3)%x_centroid": 0.0e00,
             "patch_icpp(3)%y_centroid": 0.0e00,
+========
+            "patch_icpp(2)%alpha_rho(1)": rho_shock_l,
+            "patch_icpp(2)%alpha_rho(2)": 0.0e00,
+            "patch_icpp(2)%alpha(1)": 1.0e00,
+            "patch_icpp(2)%alpha(2)": 0.0e00,
+            # Patch 3: Gas Background (Behind STL)
+            "patch_icpp(3)%geometry": 3,
+>>>>>>>> c0df7667f5b6f6db88816affdf5c7cd0ad59b187:examples/2D_lung_shock/case.py
             "patch_icpp(3)%alter_patch(1)": "T",
+            "patch_icpp(3)%x_centroid": 1.25,
+            "patch_icpp(3)%y_centroid": 0.0,
+            "patch_icpp(3)%length_x": 2.5 * leng,
+            "patch_icpp(3)%length_y": leng,
             "patch_icpp(3)%vel(1)": 0.0,
-            "patch_icpp(3)%vel(2)": 0.0e00,
+            "patch_icpp(3)%vel(2)": 0.0,
             "patch_icpp(3)%pres": patmos,
+<<<<<<<< HEAD:examples/2D_voronoi_stl/case.py
             "patch_icpp(3)%alpha_rho(1)": rhol*(1.-eps),
             "patch_icpp(3)%alpha_rho(2)": rhog*eps,
             "patch_icpp(3)%alpha(1)": 1.0e00-eps,
             "patch_icpp(3)%alpha(2)": eps,
+========
+            "patch_icpp(3)%alpha_rho(1)": 0.0,
+            "patch_icpp(3)%alpha_rho(2)": rhog, #gas
+            "patch_icpp(3)%alpha(1)": 0.0e00,
+            "patch_icpp(3)%alpha(2)": 1.0e00,
+            # Patch 4: STL (Liquid)
+            "patch_icpp(4)%geometry": 21,
+            "patch_icpp(4)%model_filepath": "voro_flat.stl",
+            "patch_icpp(4)%model_spc": 10,
+            "patch_icpp(4)%model_scale(1)": 12, #8
+            "patch_icpp(4)%model_scale(2)": 12, #8
+            "patch_icpp(4)%model_translate(1)":2.5, #1.25
+            "patch_icpp(4)%model_translate(2)":-0.25,   
+            "patch_icpp(4)%model_threshold": 0.99,
+            "patch_icpp(4)%x_centroid": 0.0e00,
+            "patch_icpp(4)%y_centroid": 0.0e00,
+            "patch_icpp(4)%alter_patch(1)": "T",
+            "patch_icpp(4)%vel(1)": 0.0,
+            "patch_icpp(4)%vel(2)": 0.0e00,
+            "patch_icpp(4)%pres": patmos,
+            "patch_icpp(4)%alpha_rho(1)": rhol,
+            "patch_icpp(4)%alpha_rho(2)": 0.0,
+            "patch_icpp(4)%alpha(1)": 1.0e00,
+            "patch_icpp(4)%alpha(2)": 0.0e00,
+>>>>>>>> c0df7667f5b6f6db88816affdf5c7cd0ad59b187:examples/2D_lung_shock/case.py
             # Fluids Physical Parameters
             "fluid_pp(1)%gamma": 1.0 / (gammal - 1.0),
             "fluid_pp(1)%pi_inf": gammal * Bl / (gammal - 1.0),
